@@ -30,7 +30,8 @@ except Exception as e:
 @st.cache_data(ttl=300)
 def load_car_data():
     try:
-        creds_info = st.secrets["gcp_service_account"]
+        import json
+        creds_info = json.loads(st.secrets["SERVICE_ACCOUNT_JSON"])
         scopes = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
         creds = Credentials.from_service_account_info(creds_info, scopes=scopes)
         client = gspread.authorize(creds)
