@@ -3,6 +3,7 @@ import google.generativeai as genai
 import pandas as pd
 import gspread
 from google.oauth2.service_account import Credentials
+from datetime import datetime
 
 # --- 0. 페이지 설정 및 디자인 ---
 st.set_page_config(page_title="JETCAR 직원 지원 시스템", page_icon="🏎️")
@@ -19,6 +20,21 @@ st.markdown("""
 KEYWORDS_CONDITION = ["무심사장기렌트카","무심사렌트카","신용불량자중고차","신용회복장기렌트","신용회복중장기렌트","신용회복중중중고차","연체자중고차","장기렌트카신용","저신용렌트카","저신용자장기렌트","저신용자장기렌트카","저신용장기렌트카","중고장기렌터카","중고장기렌트","중고장기렌트카","중고차장기렌트","중고차렌트","중고차렌트카","자동차1년렌트","1년렌트카","1년장기렌트","개인회생렌탈","개인회생자장기렌트","개인회생장기렌트"]
 KEYWORDS_LOCATION_BIZ = ["개인사업렌트카","개인사업자렌트","개인사업자장기렌트","법인렌터카","법인렌트","법인렌트견적","법인렌트카","법인장기렌터카","법인장기렌트","법인장기렌트견적","법인장기렌트카","법인장기렌트카견적","법인차량렌트","사업자렌트","사업자렌트카","사업자장기렌트","신규법인장기렌트"]
 CAR_MODELS = ["모닝", "레이", "니로", "스토닉", "셀토스", "스포티지", "쏘렌토", "모하비", "카니발", "EV3", "EV4", "EV6", "EV9", "G70", "G80", "G90", "GV60", "GV70", "GV80", "GV90", "EQ900", "SM3", "SM5", "SM6", "SM7", "XM3", "QM5", "QM6", "그랑콜레오스", "아르카나", "QM3", "티볼리", "토레스", "액티언", "렉스턴", "코란도", "스파크", "트랙스", "트레일블레이저", "A클래스", "C클래스", "E클래스", "S클래스", "GLC클래스", "GLE클래스", "CLA클래스", "CLE클래스", "CLS클래스", "EQ", "X1", "X3", "X4", "X5", "X6", "X7", "1시리즈", "3시리즈", "5시리즈", "7시리즈", "GT", "i3", "i4", "i5", "i7", "ix", "아테온", "티구안", "골프", "제타"]
+
+LOG_SHEET_ID = "1DsZRoLIQ4G3Tk-27PZs9giMrTgH-KLh_cgYbOJJd_1s"
+
+def log_user_input(user_input):
+    try:
+        import json
+        creds_info = json.loads(st.secrets["SERVICE_ACCOUNT_JSON"])
+        scopes = ["https://www.googleapis.com/auth/spreadsheets"]
+        creds = Credentials.from_service_account_info(creds_info, scopes=scopes)
+        client = gspread.authorize(creds)
+        worksheet = client.open_by_key(LOG_SHEET_ID).get_worksheet(0)
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        worksheet.append_row([now, user_input])
+    except Exception:
+        pass
 
 # --- 2. API 설정 및 데이터 로드 ---
 try:
@@ -53,6 +69,7 @@ if "messages" not in st.session_state:
 
 # --- 4. 응답 생성 함수 ---
 def generate_ai_response(user_input):
+    log_user_input(user_input)
     st.session_state.messages.append({"role": "user", "content": user_input})
     with st.chat_message("user"): st.markdown(user_input)
 
