@@ -23,6 +23,16 @@ CAR_MODELS = ["모닝", "레이", "니로", "스토닉", "셀토스", "스포티
 
 LOG_SHEET_ID = "1DsZRoLIQ4G3Tk-27PZs9giMrTgH-KLh_cgYbOJJd_1s"
 
+def get_client_ip():
+    try:
+        headers = st.context.headers
+        forwarded = headers.get("X-Forwarded-For", "")
+        if forwarded:
+            return forwarded.split(",")[0].strip()
+        return headers.get("X-Real-Ip", "알 수 없음")
+    except Exception:
+        return "알 수 없음"
+
 def log_user_input(user_input):
     try:
         import json
@@ -32,7 +42,8 @@ def log_user_input(user_input):
         client = gspread.authorize(creds)
         worksheet = client.open_by_key(LOG_SHEET_ID).get_worksheet(0)
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        worksheet.append_row([now, user_input])
+        ip = get_client_ip()
+        worksheet.append_row([now, user_input, ip])
     except Exception:
         pass
 
