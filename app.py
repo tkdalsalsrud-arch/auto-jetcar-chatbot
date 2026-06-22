@@ -112,6 +112,7 @@ def generate_ai_response(user_input):
                    홈페이지 방문 : https://www.jetcar.co.kr/
 
                 5. 상세서식예시에서 각내용 줄바꿈 잘해야합니다.
+                6. 정비는 무조건 불포함입니다.
                 """
                 
                 # 모델명은 실제 사용 가능한 gemini-1.5-flash 등을 권장합니다.
