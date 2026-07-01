@@ -138,6 +138,7 @@ def generate_ai_response(user_input):
                    📞 상담문의
                    카톡상담 : 카카오톡에 'JETCAR' 를 검색해주세요
                    홈페이지 방문 : https://www.jetcar.co.kr/
+                   네이버 채팅 문의도 환영합니다!
 
                 5. 상세서식예시에서 각내용 줄바꿈 잘해야합니다.
                 6. 정비는 무조건 불포함입니다.
